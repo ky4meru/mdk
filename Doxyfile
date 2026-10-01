@@ -1,0 +1,53 @@
+PROJECT_NAME = "Malware Development Kit"
+PROJECT_NUMBER = 0.4
+PROJECT_BRIEF = "The battle-tested, headers-only, CRT-free and STL-free C/C++ framework for malware development."
+PROJECT_LOGO =
+
+OUTPUT_DIRECTORY = Docs
+CREATE_SUBDIRS = NO
+
+OPTIMIZE_OUTPUT_FOR_C = YES
+EXTRACT_ALL = NO
+EXTRACT_STATIC = YES
+HIDE_UNDOC_MEMBERS = NO
+HIDE_UNDOC_CLASSES = NO
+SORT_MEMBER_DOCS = NO
+TAB_SIZE = 4
+STRIP_FROM_PATH = .
+
+INPUT = README.md Mdk.h Mdk
+FILE_PATTERNS = *.h
+RECURSIVE = YES
+USE_MDFILE_AS_MAINPAGE = README.md
+
+GENERATE_HTML = YES
+HTML_OUTPUT = html
+GENERATE_TREEVIEW = YES
+DISABLE_INDEX = NO
+FULL_SIDEBAR = NO
+GENERATE_LATEX = NO
+
+SOURCE_BROWSER = NO
+INLINE_SOURCES = NO
+VERBATIM_HEADERS = NO
+REFERENCED_BY_RELATION = NO
+REFERENCES_RELATION = NO
+SHOW_INCLUDE_FILES = NO
+SHOW_USED_FILES = NO
+SHOW_FILES = YES
+
+MACRO_EXPANSION = YES
+EXPAND_ONLY_PREDEF = YES
+PREDEFINED = _MDK_DEBUG \
+             _MDK_VERBOSE \
+             _MDK_PIC \
+             _MDK_BOF \
+             MDK_TEXT_SEC(x)= \
+             _In_= \
+             _In_opt_= \
+             _Out_= \
+             _Outptr_= \
+             _Inout_= \
+             _Reserved_=
+
+HAVE_DOT = NO
