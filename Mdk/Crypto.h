@@ -114,14 +114,88 @@ MDK_TEXT_SEC(MDK) static BOOL MdkRc4(_In_ PUCHAR buffer, _In_ DWORD bsize, _In_ 
 }
 
 /**
+ * @brief Encodes a raw buffer into Base64.
+ *
+ * @param buffer The raw buffer to encode.
+ * @param length The length of the buffer in bytes.
+ * @param output The output buffer in which the Base64 string is stored. It shall have at least ((length + 2) / 3) * 4 + 1 bytes allocated.
+ * @return True if the function succeeds, false otherwise.
+ */
+MDK_TEXT_SEC(MDK) static BOOL MdkEncodeBase64(_In_ PBYTE buffer, _In_ DWORD length, _Outptr_ PCHAR output)
+{
+    if (!buffer || !length || !output)
+    {
+        return FALSE;
+    }
+
+    DWORD i = 0;
+    DWORD j = 0;
+    CHAR alp[65];
+
+    MdkZeroMemory(alp, sizeof(alp));
+
+    DWORD map = 0;
+
+    for (CHAR c = 'A'; c <= 'Z'; ++c)
+    {
+        alp[map++] = c;
+    }
+
+    for (CHAR c = 'a'; c <= 'z'; ++c)
+    {
+        alp[map++] = c;
+    }
+
+    for (CHAR c = '0'; c <= '9'; ++c)
+    {
+        alp[map++] = c;
+    }
+
+    alp[map++] = '+';
+    alp[map++] = '/';
+
+    for (i = 0; i + 2 < length; i += 3)
+    {
+        output[j++] = alp[(buffer[i] >> 2) & 0x3F];
+        output[j++] = alp[((buffer[i] & 0x03) << 4) | ((buffer[i + 1] >> 4) & 0x0F)];
+        output[j++] = alp[((buffer[i + 1] & 0x0F) << 2) | ((buffer[i + 2] >> 6) & 0x03)];
+        output[j++] = alp[buffer[i + 2] & 0x3F];
+    }
+
+    if (i < length)
+    {
+        output[j++] = alp[(buffer[i] >> 2) & 0x3F];
+
+        if (i + 1 < length)
+        {
+            output[j++] = alp[((buffer[i] & 0x03) << 4) | ((buffer[i + 1] >> 4) & 0x0F)];
+            output[j++] = alp[((buffer[i + 1] & 0x0F) << 2)];
+        }
+        else
+        {
+            output[j++] = alp[((buffer[i] & 0x03) << 4)];
+            output[j++] = '=';
+        }
+
+        output[j++] = '=';
+    }
+
+    output[j] = '\0';
+
+    MdkZeroMemory(alp, sizeof(alp));
+
+    return TRUE;
+}
+
+/**
  * @brief Decodes a Base64-encoded buffer.
  *
  * @param buffer The Base64-encoded buffer to decode.
  * @param length The length of the buffer.
- * @param output The output buffer in which decoded data is stored. It shall have enough space allocated.
+ * @param output The output buffer in which decoded data is stored. It shall have at least (length / 4) * 3 bytes allocated.
  * @return True if the function succeeds, false otherwise.
  */
-MDK_TEXT_SEC(MDK) static BOOL MdkBase64(_In_ PCHAR buffer, _In_ DWORD length, _Outptr_ PCHAR output)
+MDK_TEXT_SEC(MDK) static BOOL MdkDecodeBase64(_In_ PCHAR buffer, _In_ DWORD length, _Outptr_ PCHAR output)
 {
     if (!buffer || !length || !output)
     {

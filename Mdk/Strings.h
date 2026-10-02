@@ -1,7 +1,7 @@
 /**
  * @file Strings.h
  * @author Ky4meru (@ky4meru)
- * @brief ANSI and Unicode string comparison functions.
+ * @brief ANSI and Unicode string comparison and length functions.
  * @version 0.4
  * @date 2026-09-15
  * @copyright Copyright (c) 2024-2026
@@ -140,6 +140,50 @@ MDK_TEXT_SEC(MDK) static INT MdkCompareInsensitiveWideString(_In_ LPCWSTR lhs, _
     MDK_LOG_DEBUG("Returning %d", ret);
 
     return ret;
+}
+
+/**
+ * @brief Returns the length of a null-terminated ANSI string.
+ *
+ * @param str The null-terminated string whose length is to be determined.
+ * @return The number of characters in the string.
+ */
+MDK_TEXT_SEC(MDK) static SIZE_T MdkStringLength(_In_ LPCSTR str)
+{
+    MDK_LOG_DEBUG("Calling with (str=\"%s\")", str);
+
+    SIZE_T len = 0;
+
+    while (str[len])
+    {
+        ++len;
+    }
+
+    MDK_LOG_DEBUG("Returning %zu", len);
+
+    return len;
+}
+
+/**
+ * @brief Returns the length of a null-terminated UNICODE string.
+ *
+ * @param str The null-terminated wide string whose length is to be determined.
+ * @return The number of characters in the string.
+ */
+MDK_TEXT_SEC(MDK) static SIZE_T MdkWideStringLength(_In_ LPCWSTR str)
+{
+    MDK_LOG_DEBUG("Calling with (str=\"%ls\")", str);
+
+    SIZE_T len = 0;
+
+    while (str[len])
+    {
+        ++len;
+    }
+
+    MDK_LOG_DEBUG("Returning %zu", len);
+
+    return len;
 }
 
 #pragma clang optimize on
