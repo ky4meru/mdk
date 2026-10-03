@@ -89,7 +89,7 @@ MDK_TEXT_SEC(MDK) static BOOL MdkInjectLocallyViaTpAlloc(_In_ MDK_ALLOCATOR allo
  * @param cfg If nonzero, whitelists the allocated region in Control Flow Guard.
  * @return If the function succeeds, the return value is nonzero.
  */
-MDK_TEXT_SEC(MDK) static BOOL MdkThreadlessInjectLocallyViaHwbp(_In_ LPVOID gate, _In_ DWORD drx, _In_ MDK_ALLOCATOR alloc, _In_opt_ LPCSTR path, _In_ LPCVOID shellcode, _In_ SIZE_T size, _In_ DWORD ms, _In_ BOOL cfg)
+MDK_TEXT_SEC(MDK) static BOOL MdkInjectLocallyViaHwbp(_In_ LPVOID gate, _In_ DWORD drx, _In_ MDK_ALLOCATOR alloc, _In_opt_ LPCSTR path, _In_ LPCVOID shellcode, _In_ SIZE_T size, _In_ DWORD ms, _In_ BOOL cfg)
 {
     LPVOID payload = NULL;
 

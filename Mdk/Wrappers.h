@@ -557,6 +557,51 @@ MDK_TEXT_SEC(MDK) static HANDLE MdkOpenProcess(_In_ DWORD access, _In_ BOOL inhe
 }
 
 /**
+ * @brief Opens an existing thread object.
+ *
+ * @param access The access to the thread object. This access right is checked against the security descriptor for the thread.
+ * @param inherit If nonzero, processes created by this process will inherit the handle.
+ * @param tid The identifier of the thread to be opened.
+ * @return If the function succeeds, the return value is an open handle to the specified thread. If the function fails, the return value is NULL.
+ */
+MDK_TEXT_SEC(MDK) static HANDLE MdkOpenThread(_In_ DWORD access, _In_ BOOL inherit, _In_ DWORD tid)
+{
+    MDK_DECL_PROC(NtOpenThread);
+
+    HANDLE thd = NULL;
+    NTSTATUS nts = 0;
+    MDK_CLIENT_ID cid;
+    MDK_OBJECT_ATTRIBUTES oa;
+
+    MdkZeroMemory(&cid, sizeof(cid));
+    MdkZeroMemory(&oa, sizeof(oa));
+
+    oa.Length = sizeof(oa);
+
+    if (inherit)
+    {
+        oa.Attributes = 0x2;
+    }
+
+    cid.UniqueProcess = NULL;
+    cid.UniqueThread = (HANDLE)(ULONG_PTR)tid;
+
+    nts = MDK_INDIRECT_SYSCALL(NtOpenThread, &thd, access, &oa, &cid);
+
+    if (!MDK_SUCCEEDED(nts))
+    {
+        thd = NULL;
+    }
+
+    MdkSetLastError(nts);
+
+    MdkZeroMemory(&cid, sizeof(cid));
+    MdkZeroMemory(&oa, sizeof(oa));
+
+    return thd;
+}
+
+/**
  * @brief Closes an open object handle.
  *
  * @param hd The handle to an open object.
