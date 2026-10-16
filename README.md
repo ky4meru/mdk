@@ -32,6 +32,39 @@ Below is an example with Clang on Linux.
 clang --target=x86_64-w64-mingw32 -I "/local/path/to/mdk" -c file.cpp -o file.o
 ```
 
+# Example
+
+Here is a simple shellcode injection method, using this framework.
+
+```c
+#define _MDK_VERBOSE
+
+#include "Mdk.h"
+
+char shellcode[] = { /* insert byte code here */ };
+
+int main(int argc, char* argv[])
+{
+    LPVOID payload = NULL;
+
+    if (!MdkVirtualAllocEx(MdkCurrentProcess(), payload, sizeof(shellcode), MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE))
+    {
+        MDK_LOG_ERROR("Failed to allocate memory");
+    }
+
+    if (!MdkWriteProcessMemory(MdkCurrentProcess(), payload, shellcode, sizeof(shellcode), NULL))
+    {
+        MDK_LOG_ERROR("Failed to write memory");
+    }
+
+    MDK_CALL_PROC(payload);
+
+    MDK_LOG_SUCCESS("Successfully injected")
+
+    return MDK_SUCCESS;
+}
+```
+
 ## Preprocessor
 
 Preprocessing definitions **must** be defined before the framework is included.
