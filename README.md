@@ -82,4 +82,4 @@ Preprocessing definitions **must** be defined before the framework is included.
 > To anyone who gains access to this repository: I cannot be held responsible for what you do with this project.
 > **Use it at your own risk!**
 
-See [LICENSE.txt](https://github.com/ky4meru/mdk/LICENSE.txt) file.
+See [LICENSE.txt](./LICENSE.txt) file.
