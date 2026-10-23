@@ -1063,7 +1063,9 @@ typedef enum _MDK_INJECTION_TECHNIQUE
     MdkThreadlessViaHwbpLocalInjection,
     MdkEarlyCryoBirdRemoteInjection,
     MdkPoolPartyViaTpDirectRemoteInjection,
-    MdkEntryPointHijackingRemoteInjection
+    MdkEntryPointHijackingRemoteInjection,
+    MdkDirtyVanityRemoteInjection,
+    MdkFiberLocalInjection
 } MDK_INJECTION_TECHNIQUE, * MDK_PINJECTION_TECHNIQUE;
 
 /**
@@ -1350,5 +1352,15 @@ typedef struct _MDK_JOBOBJECT_FREEZE_INFORMATION
     UCHAR Reserved0[2];
     MDK_JOBOBJECT_WAKE_FILTER WakeFilter;
 } MDK_JOBOBJECT_FREEZE_INFORMATION, * MDK_PJOBOBJECT_FREEZE_INFORMATION;
+
+/**
+ * @brief The RTLP_PROCESS_REFLECTION_REFLECTION_INFORMATION structure contains handles and identifiers for a process reflection created by RtlCreateProcessReflection.
+ */
+typedef struct _MDK_RTLP_PROCESS_REFLECTION_REFLECTION_INFORMATION
+{
+    HANDLE ReflectionProcessHandle;
+    HANDLE ReflectionThreadHandle;
+    MDK_CLIENT_ID ReflectionClientId;
+} MDK_RTLP_PROCESS_REFLECTION_REFLECTION_INFORMATION, * MDK_PRTLP_PROCESS_REFLECTION_REFLECTION_INFORMATION;
 
 #endif // _MDK_TYPES_H_

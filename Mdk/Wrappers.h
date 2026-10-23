@@ -193,6 +193,36 @@ MDK_TEXT_SEC(MDK) static BOOL MdkVirtualProtectEx(_In_ HANDLE phd, _In_ LPVOID a
 }
 
 /**
+ * @brief Releases, decommits, or releases and decommits a region of memory within the virtual address space of a specified process.
+ *
+ * @param phd The handle to a process. The function frees memory within the virtual address space of this process.
+ * @param addr The pointer to the starting address of the region of memory to be freed.
+ * @param size The size of the region of memory to free, in bytes.
+ * @param type The type of free operation.
+ * @return If the function succeeds, the return value is nonzero.
+ */
+MDK_TEXT_SEC(MDK) static BOOL MdkVirtualFreeEx(_In_ HANDLE phd, _Inout_ LPVOID addr, _In_ SIZE_T size, _In_ DWORD type)
+{
+    MDK_DECL_PROC(NtFreeVirtualMemory);
+
+    BOOL ret = TRUE;
+    LPVOID mem = addr;
+    NTSTATUS nts = 0;
+    SIZE_T tmp = size;
+
+    nts = MDK_INDIRECT_SYSCALL(NtFreeVirtualMemory, phd, &mem, &tmp, type);
+
+    if (!MDK_SUCCEEDED(nts))
+    {
+        ret = FALSE;
+    }
+
+    MdkSetLastError(nts);
+
+    return ret;
+}
+
+/**
  * @brief Writes data to an area of memory in a specified process.
  *
  * @param phd The handle to the process memory to be modified.
@@ -662,6 +692,36 @@ MDK_TEXT_SEC(MDK) static HMODULE MdkLoadLibraryA(_In_ HANDLE phd, _In_ LPCSTR pa
     }
 
     MdkSetLastError(nts);
+
+    return module;
+}
+
+/**
+ * @brief Loads a DLL into the current process by its wide-character name.
+ *
+ * @param name The name of the DLL to load (e.g. L"amsi.dll").
+ * @return The base address of the loaded module, or NULL if it fails.
+ */
+MDK_TEXT_SEC(MDK) static LPVOID MdkLoadDll(_In_ LPCWSTR name)
+{
+    MDK_DECL_DLL(Ntdll);
+    MDK_DECL_PROC(LdrLoadDll);
+
+    LPVOID module = NULL;
+    MDK_UNICODE_STRING ustr;
+    LPCWSTR p = name;
+
+    MdkZeroMemory(&ustr, sizeof(ustr));
+
+    while (*p) { ustr.Length += 2; p++; }
+
+    ustr.MaximumLength = ustr.Length + 2;
+    ustr.Buffer = (PWSTR)name;
+
+    NTSTATUS nts = MDK_CAST_SINT(MDK_CALL_PROC(MDK_GET_PROC(Ntdll, LdrLoadDll), NULL, NULL, &ustr, &module));
+
+    MdkSetLastError(nts);
+    MdkZeroMemory(&ustr, sizeof(ustr));
 
     return module;
 }

@@ -12,6 +12,7 @@
 
 #include "Allocators.h"
 #include "Breakpoints.h"
+#include "Bypass.h"
 #include "Crypto.h"
 #include "Debug.h"
 #include "Hashes.h"
